@@ -2,5 +2,4 @@ build/
 build-*/
 .tmp/
 .gocache/
-dist/
 *.test

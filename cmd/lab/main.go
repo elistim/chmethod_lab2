@@ -30,7 +30,7 @@ func main() {
 		defer cancel()
 		_ = server.Shutdown(shutdown)
 	}()
-	fmt.Printf("Численные методы · ЛР №2 · Вариант 9\nОткройте http://%s\nCtrl+C — завершить работу.\n", listener.Addr())
+	fmt.Printf("Численные методы · ЛР2 · Вариант 9\nОткройте http://%s\nCtrl+C — завершить работу.\n", listener.Addr())
 	if err := server.Serve(listener); err != nil && err != http.ErrServerClosed {
 		log.Fatal(err)
 	}
