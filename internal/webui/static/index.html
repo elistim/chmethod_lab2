@@ -1,62 +1,426 @@
 <!doctype html>
 <html lang="ru">
-<head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="color-scheme" content="light"><title>Численные методы · Вариант 9</title>
-  <link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/polish.css"><script src="/app.js" defer></script>
-</head>
-<body>
-<div class="shell">
-  <header class="topbar"><div class="brand"><div class="logo">∫</div><div><h1>Численные методы<span class="brand-dot">.</span></h1><p>ТУСУР · Лабораторная работа №2</p></div></div><div class="top-actions"><span class="badge">Вариант <b>09</b></span><button id="print" class="light"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 9V3h12v6M6 17H3V9h18v8h-3M6 14h12v7H6z"/></svg>Печать / PDF</button></div></header>
-  <section class="intro" aria-labelledby="intro-title"><div class="intro-copy"><div class="eyebrow"><span></span> ВЫЧИСЛИТЕЛЬНАЯ ЛАБОРАТОРИЯ</div><h2 id="intro-title">От функции —<br>к точному результату.</h2><p id="intro-description">Исследуйте интерполяцию, производные и интегралы.<br>Меняйте параметры. Сравнивайте методы. Наблюдайте погрешность.</p><div class="intro-chips"><span>03 задания</span><span>Вариант 09</span><span>Интерактивные графики</span></div></div><div class="intro-visual" aria-hidden="true"><svg viewBox="0 0 450 215" fill="none"><path d="M25 45H435M25 85H435M25 125H435M25 165H435M75 15V195M145 15V195M215 15V195M285 15V195M355 15V195M425 15V195" stroke="#ffffff" stroke-opacity=".07"/><path d="M25 184C80 176 101 145 145 117S232 76 285 64S373 40 425 34V185H25Z" fill="#b8dbba" fill-opacity=".09"/><path d="M25 184C80 176 101 145 145 117S232 76 285 64S373 40 425 34" stroke="#c2dfbe" stroke-width="2.5"/><path d="M30 145C92 117 171 102 235 99S352 102 425 112" stroke="#e7a17e" stroke-width="1.8" stroke-dasharray="5 6"/><g fill="#183e35" stroke="#c2dfbe" stroke-width="2"><circle cx="75" cy="166" r="4"/><circle cx="145" cy="117" r="4"/><circle cx="215" cy="82" r="4"/><circle cx="285" cy="64" r="4"/><circle cx="355" cy="46" r="4"/></g><text x="293" y="151" fill="#e2ecdf" font-size="32" font-family="Georgia,serif">f(x) = √x + 1</text><text x="25" y="207" fill="#99b6a7" font-size="10" font-family="Segoe UI,sans-serif">ФУНКЦИЯ · ПОЛИНОМ · ПОГРЕШНОСТЬ</text></svg></div></section>
-  <div class="workspace-head"><span>РАБОЧАЯ ОБЛАСТЬ</span><span id="workspace-caption">Приближение функций</span></div>
-  <nav class="tabs" aria-label="Задания"><button data-tab="interpolation" class="active" aria-pressed="true"><b>6.3</b><span>Приближение функций<small>Интерполяция Ньютона</small></span><i>↗</i></button><button data-tab="differentiation" aria-pressed="false"><b>6.4</b><span>Дифференцирование<small>Первая и вторая производные</small></span><i>↗</i></button><button data-tab="integration" aria-pressed="false"><b>6.5</b><span>Интегрирование<small>Квадратуры и формула Гаусса</small></span><i>↗</i></button></nav>
-  <div class="layout">
-    <aside class="card settings">
-      <form id="interpolation-form">
-        <div class="section-head"><h2>Параметры расчёта</h2><span class="tag">Ньютон</span></div>
-        <div class="formula"><span id="function-display">f(x) = √x + 1</span><small id="source-grid-display">x ∈ [1; 2] · 11 исходных узлов</small></div>
-        <label for="function-expression">Функция f(x)</label><input id="function-expression" type="text" value="sqrt(x)+1" maxlength="256" spellcheck="false" required list="function-examples">
-        <datalist id="function-examples"><option value="sqrt(x)+1"><option value="sin(x)"><option value="x^2"><option value="exp(-x^2)"><option value="ln(x)"></datalist>
-        <p class="hint">x, pi, e; + − * / ^; sqrt, sin, cos, tan, exp, ln, log, abs. Умножение: 2*x. Углы — в радианах.</p>
-        <label class="check"><input id="use-function" type="checkbox" checked><span>Вычислять y таблицы по формуле</span></label>
-        <label for="degree">Степень полинома m</label><input id="degree" type="number" min="1" max="10" value="3" required>
-        <p class="hint">Используются m + 1 ближайших узлов. При m = 10 — все 11 узлов варианта.</p>
-        <div class="subhead">Новая сетка</div><div class="row"><div><label for="grid-a">Начало</label><input id="grid-a" type="number" step="any" value="1" required></div><div><label for="grid-b">Конец</label><input id="grid-b" type="number" step="any" value="2" required></div></div>
-        <label for="grid-step">Шаг новой сетки</label><input id="grid-step" type="number" min="0.000001" step="any" value="0.05" required>
-        <details><summary>Своя сетка и исходная таблица</summary>
-          <label for="nodes">Узлы x; y — по одному на строку</label><textarea id="nodes" rows="10" spellcheck="false" aria-describedby="nodes-hint"></textarea><p class="hint" id="nodes-hint">Десятичный разделитель — точка. Между x и y — пробел или точка с запятой. Узлы по возрастанию.</p>
-          <label for="custom-grid">Своя новая сетка (необязательно)</label><textarea id="custom-grid" rows="3" placeholder="1; 1.05; 1.1; …" spellcheck="false"></textarea><p class="hint">Числа через пробел или ;. Если поле заполнено, используется эта сетка.</p>
-          <label class="check"><input id="reference" type="checkbox" checked><span>Сравнивать с введённой функцией</span></label>
-        </details>
-        <button class="primary" type="submit">Рассчитать</button><button class="light full" id="reset" type="button">Восстановить вариант 9</button>
-      </form>
-      <form id="integration-form" hidden>
-        <div class="section-head"><h2>Параметры интеграла</h2><span class="tag">Вариант 9</span></div>
-        <div class="formula integral"><span id="integrand-display">f(x) = 1 / (√(1−x²) · √(1+x²))</span><small>Вариант 9: [−0,75; 0,75], n = 8</small></div>
-        <label for="integrand-expression">Подынтегральная функция f(x)</label><input id="integrand-expression" type="text" value="1/(sqrt(1-x^2)*sqrt(1+x^2))" maxlength="256" spellcheck="false" required list="integrand-examples">
-        <datalist id="integrand-examples"><option value="1/(sqrt(1-x^2)*sqrt(1+x^2))"><option value="x^2"><option value="sin(x)"><option value="exp(-x^2)"><option value="1/(1+x^2)"></datalist>
-        <p class="hint">Те же операции и функции, что в 6.3. Для своего выражения выберите отрезок, на котором функция непрерывна и конечна.</p>
-        <label for="method">Квадратурная формула</label><select id="method"><option value="simpson">Симпсона</option><option value="trapezoid">Трапеций</option><option value="midpoint">Средних прямоугольников</option><option value="gauss">Гаусса — Лежандра</option></select>
-        <div class="row"><div><label for="int-a">Нижний предел a</label><input id="int-a" type="number" min="-1000000" max="1000000" step="any" value="-0.75" required></div><div><label for="int-b">Верхний предел b</label><input id="int-b" type="number" min="-1000000" max="1000000" step="any" value="0.75" required></div></div>
-        <div id="n-field"><label for="intervals">Начальное число интервалов n₀</label><input id="intervals" type="number" min="1" max="4096" value="8" required></div>
-        <div id="order-field" hidden><label for="order">Порядок формулы Гаусса (число узлов)</label><input id="order" type="number" min="2" max="16" value="8" required><p class="hint">Сначала одна панель с 8 узлами; затем число панелей удваивается до достижения точности.</p></div>
-        <label for="tolerance">Относительная точность ε</label><input id="tolerance" type="text" value="10⁻⁶" placeholder="10⁻⁶" spellcheck="false" required aria-describedby="tolerance-hint">
-        <p class="hint" id="tolerance-hint">Можно ввести 10⁻⁶, 10^-6 или 0,000001. Диапазон: от 10⁻¹² до 0,1. ε задаётся долей: 10⁻⁶ = 0,0001%.</p>
-        <button class="primary" type="submit">Вычислить интеграл</button><button class="light full" id="reset-integration" type="button">Восстановить вариант 9</button>
-      </form>
-      <p class="source">Условия: КР / ЛР, 2019, с. 102–106.<br>Методы: учебное пособие, гл. 7–9.</p>
-    </aside>
-    <main>
-      <div id="status" class="status" role="status" aria-live="polite">Загрузка исходных данных…</div>
-      <section id="summary" class="summary" aria-label="Результаты"></section>
-      <section class="card chart-card"><div class="section-head"><div><h2 id="chart-title">Интерполяция функции</h2><p id="chart-subtitle" class="hint"></p></div><select id="derivative-view" aria-label="Отображаемая производная" hidden><option value="first">Первая производная</option><option value="second">Вторая производная</option></select></div><div id="chart" class="chart"></div><div id="chart-legend" class="legend"></div><p class="hint">Наведите указатель на график, чтобы увидеть значения. Кнопки легенды скрывают линии.</p></section>
-      <section class="card chart-card" id="error-card"><div class="section-head"><div><h2 id="error-title">Абсолютная погрешность</h2><p class="hint" id="error-subtitle">На узлах новой сетки</p></div></div><div id="error-chart" class="chart small"></div><div id="error-legend" class="legend"></div></section>
-      <section class="card table-card"><div class="section-head"><div><h2 id="table-title">Значения на новой сетке</h2><p id="table-subtitle" class="hint"></p></div><button class="light" id="export" disabled>Скачать CSV</button></div><div class="table-scroll"><table id="results"></table></div></section>
-      <details class="card explanation" open><summary>Метод и формулы</summary><div id="explanation"></div></details>
-      <details class="card explanation" id="gauss-details" hidden><summary>Узлы и веса формулы Гаусса</summary><p class="hint">На стандартном отрезке [−1; 1]. Для панели [aᵢ; bᵢ]: x = (aᵢ+bᵢ)/2 + (bᵢ−aᵢ)t/2, вес умножается на (bᵢ−aᵢ)/2.</p><div class="table-scroll"><table id="gauss-table"></table></div></details>
-    </main>
-  </div>
-  <footer>Вариант 09 · Интерполяция, производные и квадратуры · Вычисления на Go</footer>
-</div>
-</body></html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>Численные методы · Вариант 9</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="/polish.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <div class="shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="logo">∫</div>
+          <div>
+            <h1>Численные методы<span class="brand-dot">.</span></h1>
+            <p>ТУСУР · Лабораторная работа №2</p>
+          </div>
+        </div>
+        <div class="top-actions">
+          <span class="badge">Вариант <b>09</b></span
+          ><button id="print" class="light">
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              aria-hidden="true"
+            >
+              <path d="M6 9V3h12v6M6 17H3V9h18v8h-3M6 14h12v7H6z" /></svg
+            >Печать / PDF
+          </button>
+        </div>
+      </header>
+      <section class="intro" aria-labelledby="intro-title">
+        <div class="intro-copy">
+          <div class="eyebrow"><span></span> ВЫЧИСЛИТЕЛЬНАЯ ЛАБОРАТОРИЯ</div>
+          <h2 id="intro-title">От функции —<br />к точному результату.</h2>
+          <p id="intro-description">
+            Исследуйте интерполяцию, производные и интегралы.<br />Меняйте
+            параметры. Сравнивайте методы. Наблюдайте погрешность.
+          </p>
+          <div class="intro-chips">
+            <span>03 задания</span><span>Вариант 09</span
+            ><span>Интерактивные графики</span>
+          </div>
+        </div>
+        <div class="intro-visual" aria-hidden="true">
+          <svg viewBox="0 0 450 215" fill="none">
+            <path
+              d="M25 45H435M25 85H435M25 125H435M25 165H435M75 15V195M145 15V195M215 15V195M285 15V195M355 15V195M425 15V195"
+              stroke="#ffffff"
+              stroke-opacity=".07"
+            />
+            <path
+              d="M25 184C80 176 101 145 145 117S232 76 285 64S373 40 425 34V185H25Z"
+              fill="#b8dbba"
+              fill-opacity=".09"
+            />
+            <path
+              d="M25 184C80 176 101 145 145 117S232 76 285 64S373 40 425 34"
+              stroke="#c2dfbe"
+              stroke-width="2.5"
+            />
+            <path
+              d="M30 145C92 117 171 102 235 99S352 102 425 112"
+              stroke="#e7a17e"
+              stroke-width="1.8"
+              stroke-dasharray="5 6"
+            />
+            <g fill="#183e35" stroke="#c2dfbe" stroke-width="2">
+              <circle cx="75" cy="166" r="4" />
+              <circle cx="145" cy="117" r="4" />
+              <circle cx="215" cy="82" r="4" />
+              <circle cx="285" cy="64" r="4" />
+              <circle cx="355" cy="46" r="4" />
+            </g>
+            <text
+              x="293"
+              y="151"
+              fill="#e2ecdf"
+              font-size="32"
+              font-family="Georgia,serif"
+            >
+              f(x) = √x + 1
+            </text>
+            <text
+              x="25"
+              y="207"
+              fill="#99b6a7"
+              font-size="10"
+              font-family="Segoe UI,sans-serif"
+            >
+              ФУНКЦИЯ · ПОЛИНОМ · ПОГРЕШНОСТЬ
+            </text>
+          </svg>
+        </div>
+      </section>
+      <div class="workspace-head">
+        <span>РАБОЧАЯ ОБЛАСТЬ</span
+        ><span id="workspace-caption">Приближение функций</span>
+      </div>
+      <nav class="tabs" aria-label="Задания">
+        <button data-tab="interpolation" class="active" aria-pressed="true">
+          <b>6.3</b
+          ><span>Приближение функций<small>Интерполяция Ньютона</small></span
+          ><i>↗</i></button
+        ><button data-tab="differentiation" aria-pressed="false">
+          <b>6.4</b
+          ><span
+            >Дифференцирование<small>Первая и вторая производные</small></span
+          ><i>↗</i></button
+        ><button data-tab="integration" aria-pressed="false">
+          <b>6.5</b
+          ><span>Интегрирование<small>Квадратуры и формула Гаусса</small></span
+          ><i>↗</i>
+        </button>
+      </nav>
+      <div class="layout">
+        <aside class="card settings">
+          <form id="interpolation-form">
+            <div class="section-head">
+              <h2>Параметры расчёта</h2>
+              <span class="tag">Ньютон</span>
+            </div>
+            <div class="formula">
+              <span id="function-display">f(x) = √x + 1</span
+              ><small id="source-grid-display"
+                >x ∈ [1; 2] · 11 исходных узлов</small
+              >
+            </div>
+            <label for="function-expression">Функция f(x)</label
+            ><input
+              id="function-expression"
+              type="text"
+              value="sqrt(x)+1"
+              maxlength="256"
+              spellcheck="false"
+              required
+              list="function-examples"
+            />
+            <datalist id="function-examples">
+              <option value="sqrt(x)+1"></option>
+              <option value="sin(x)"></option>
+              <option value="x^2"></option>
+              <option value="exp(-x^2)"></option>
+              <option value="ln(x)"></option>
+            </datalist>
+            <p class="hint">
+              x, pi, e; + − * / ^; sqrt, sin, cos, tan, exp, ln, log, abs.
+              Умножение: 2*x. Углы — в радианах.
+            </p>
+            <label class="check"
+              ><input id="use-function" type="checkbox" checked /><span
+                >Вычислять y таблицы по формуле</span
+              ></label
+            >
+            <label for="degree">Степень полинома m</label
+            ><input
+              id="degree"
+              type="number"
+              min="1"
+              max="10"
+              value="3"
+              required
+            />
+            <p class="hint">
+              Используются m + 1 ближайших узлов. При m = 10 — все 11 узлов
+              варианта.
+            </p>
+            <div class="subhead">Новая сетка</div>
+            <div class="row">
+              <div>
+                <label for="grid-a">Начало</label
+                ><input
+                  id="grid-a"
+                  type="number"
+                  step="any"
+                  value="1"
+                  required
+                />
+              </div>
+              <div>
+                <label for="grid-b">Конец</label
+                ><input
+                  id="grid-b"
+                  type="number"
+                  step="any"
+                  value="2"
+                  required
+                />
+              </div>
+            </div>
+            <label for="grid-step">Шаг новой сетки</label
+            ><input
+              id="grid-step"
+              type="number"
+              min="0.000001"
+              step="any"
+              value="0.05"
+              required
+            />
+            <details>
+              <summary>Своя сетка и исходная таблица</summary>
+              <label for="nodes">Узлы x; y — по одному на строку</label
+              ><textarea
+                id="nodes"
+                rows="10"
+                spellcheck="false"
+                aria-describedby="nodes-hint"
+              ></textarea>
+              <p class="hint" id="nodes-hint">
+                Десятичный разделитель — точка. Между x и y — пробел или точка с
+                запятой. Узлы по возрастанию.
+              </p>
+              <label for="custom-grid">Своя новая сетка (необязательно)</label
+              ><textarea
+                id="custom-grid"
+                rows="3"
+                placeholder="1; 1.05; 1.1; …"
+                spellcheck="false"
+              ></textarea>
+              <p class="hint">
+                Числа через пробел или ;. Если поле заполнено, используется эта
+                сетка.
+              </p>
+              <label class="check"
+                ><input id="reference" type="checkbox" checked /><span
+                  >Сравнивать с введённой функцией</span
+                ></label
+              >
+            </details>
+            <button class="primary" type="submit">Рассчитать</button
+            ><button class="light full" id="reset" type="button">
+              Восстановить вариант 9
+            </button>
+          </form>
+          <form id="integration-form" hidden>
+            <div class="section-head">
+              <h2>Параметры интеграла</h2>
+              <span class="tag">Вариант 9</span>
+            </div>
+            <div class="formula integral">
+              <span id="integrand-display">f(x) = 1 / (√(1−x²) · √(1+x²))</span
+              ><small>Вариант 9: [−0,75; 0,75], n = 8</small>
+            </div>
+            <label for="integrand-expression"
+              >Подынтегральная функция f(x)</label
+            ><input
+              id="integrand-expression"
+              type="text"
+              value="1/(sqrt(1-x^2)*sqrt(1+x^2))"
+              maxlength="256"
+              spellcheck="false"
+              required
+              list="integrand-examples"
+            />
+            <datalist id="integrand-examples">
+              <option value="1/(sqrt(1-x^2)*sqrt(1+x^2))"></option>
+              <option value="x^2"></option>
+              <option value="sin(x)"></option>
+              <option value="exp(-x^2)"></option>
+              <option value="1/(1+x^2)"></option>
+            </datalist>
+            <p class="hint">
+              Те же операции и функции, что в 6.3. Для своего выражения выберите
+              отрезок, на котором функция непрерывна и конечна.
+            </p>
+            <label for="method">Квадратурная формула</label
+            ><select id="method">
+              <option value="simpson">Симпсона</option>
+              <option value="trapezoid">Трапеций</option>
+              <option value="midpoint">Средних прямоугольников</option>
+              <option value="gauss">Гаусса — Лежандра</option>
+            </select>
+            <div class="row">
+              <div>
+                <label for="int-a">Нижний предел a</label
+                ><input
+                  id="int-a"
+                  type="number"
+                  min="-1000000"
+                  max="1000000"
+                  step="any"
+                  value="-0.75"
+                  required
+                />
+              </div>
+              <div>
+                <label for="int-b">Верхний предел b</label
+                ><input
+                  id="int-b"
+                  type="number"
+                  min="-1000000"
+                  max="1000000"
+                  step="any"
+                  value="0.75"
+                  required
+                />
+              </div>
+            </div>
+            <div id="n-field">
+              <label for="intervals">Начальное число интервалов n₀</label
+              ><input
+                id="intervals"
+                type="number"
+                min="1"
+                max="4096"
+                value="8"
+                required
+              />
+            </div>
+            <div id="order-field" hidden>
+              <label for="order">Порядок формулы Гаусса (число узлов)</label
+              ><input
+                id="order"
+                type="number"
+                min="2"
+                max="16"
+                value="8"
+                required
+              />
+              <p class="hint">
+                Сначала одна панель с 8 узлами; затем число панелей удваивается
+                до достижения точности.
+              </p>
+            </div>
+            <label for="tolerance">Относительная точность ε</label
+            ><input
+              id="tolerance"
+              type="text"
+              value="10⁻⁶"
+              placeholder="10⁻⁶"
+              spellcheck="false"
+              required
+              aria-describedby="tolerance-hint"
+            />
+            <p class="hint" id="tolerance-hint">
+              Можно ввести 10⁻⁶, 10^-6 или 0,000001. Диапазон: от 10⁻¹² до 0,1.
+              ε задаётся долей: 10⁻⁶ = 0,0001%.
+            </p>
+            <button class="primary" type="submit">Вычислить интеграл</button
+            ><button class="light full" id="reset-integration" type="button">
+              Восстановить вариант 9
+            </button>
+          </form>
+          <p class="source">
+            Условия: КР / ЛР, 2019, с. 102–106.<br />Методы: учебное пособие,
+            гл. 7–9.
+          </p>
+        </aside>
+        <main>
+          <div id="status" class="status" role="status" aria-live="polite">
+            Загрузка исходных данных…
+          </div>
+          <section
+            id="summary"
+            class="summary"
+            aria-label="Результаты"
+          ></section>
+          <section class="card chart-card">
+            <div class="section-head">
+              <div>
+                <h2 id="chart-title">Интерполяция функции</h2>
+                <p id="chart-subtitle" class="hint"></p>
+              </div>
+              <select
+                id="derivative-view"
+                aria-label="Отображаемая производная"
+                hidden
+              >
+                <option value="first">Первая производная</option>
+                <option value="second">Вторая производная</option>
+              </select>
+            </div>
+            <div id="chart" class="chart"></div>
+            <div id="chart-legend" class="legend"></div>
+            <p class="hint">
+              Наведите указатель на график, чтобы увидеть значения. Кнопки
+              легенды скрывают линии.
+            </p>
+          </section>
+          <section class="card chart-card" id="error-card">
+            <div class="section-head">
+              <div>
+                <h2 id="error-title">Абсолютная погрешность</h2>
+                <p class="hint" id="error-subtitle">На узлах новой сетки</p>
+              </div>
+            </div>
+            <div id="error-chart" class="chart small"></div>
+            <div id="error-legend" class="legend"></div>
+          </section>
+          <section class="card table-card">
+            <div class="section-head">
+              <div>
+                <h2 id="table-title">Значения на новой сетке</h2>
+                <p id="table-subtitle" class="hint"></p>
+              </div>
+              <button class="light" id="export" disabled>Скачать CSV</button>
+            </div>
+            <div class="table-scroll"><table id="results"></table></div>
+          </section>
+          <details class="card explanation" open>
+            <summary>Метод и формулы</summary>
+            <div id="explanation"></div>
+          </details>
+          <details class="card explanation" id="gauss-details" hidden>
+            <summary>Узлы и веса формулы Гаусса</summary>
+            <p class="hint">
+              На стандартном отрезке [−1; 1]. Для панели [aᵢ; bᵢ]: x = (aᵢ+bᵢ)/2
+              + (bᵢ−aᵢ)t/2, вес умножается на (bᵢ−aᵢ)/2.
+            </p>
+            <div class="table-scroll"><table id="gauss-table"></table></div>
+          </details>
+        </main>
+      </div>
+      <footer>
+        Вариант 09 · Интерполяция, производные и квадратуры · Вычисления на Go
+      </footer>
+    </div>
+  </body>
+</html>
