@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1330" viewBox="0 0 1600 1330">
+<rect width="100%" height="100%" fill="white"/>
+<text x="800.0" y="60" text-anchor="middle" font-family="Times New Roman" font-size="43" font-weight="bold">Алгоритм заданий 6.3 и 6.4</text>
+<rect x="175" y="105" width="1250" height="125" rx="20" fill="#eef5fb" stroke="#1f4e79" stroke-width="4"/>
+<text x="800.0" y="177.5" text-anchor="middle" font-family="Times New Roman" font-size="31">Ввести исходную таблицу, новую сетку и степень m</text>
+<line x1="800.0" y1="230" x2="800.0" y2="289" stroke="#222" stroke-width="4"/>
+<polygon points="800.0,303 787.0,281 813.0,281" fill="#222"/>
+<rect x="175" y="305" width="1250" height="125" rx="20" fill="#eef5fb" stroke="#1f4e79" stroke-width="4"/>
+<text x="800.0" y="377.5" text-anchor="middle" font-family="Times New Roman" font-size="31">Для точки новой сетки выбрать m + 1 ближайших исходных узлов</text>
+<line x1="800.0" y1="430" x2="800.0" y2="489" stroke="#222" stroke-width="4"/>
+<polygon points="800.0,503 787.0,481 813.0,481" fill="#222"/>
+<rect x="175" y="505" width="1250" height="125" rx="20" fill="#eef5fb" stroke="#1f4e79" stroke-width="4"/>
+<text x="800.0" y="577.5" text-anchor="middle" font-family="Times New Roman" font-size="31">Вычислить разделённые разности — коэффициенты полинома Ньютона</text>
+<line x1="800.0" y1="630" x2="800.0" y2="689" stroke="#222" stroke-width="4"/>
+<polygon points="800.0,703 787.0,681 813.0,681" fill="#222"/>
+<rect x="175" y="705" width="1250" height="125" rx="20" fill="#eef5fb" stroke="#1f4e79" stroke-width="4"/>
+<text x="800.0" y="777.5" text-anchor="middle" font-family="Times New Roman" font-size="31">Вычислить P(x), P′(x) и P″(x)</text>
+<line x1="800.0" y1="830" x2="800.0" y2="889" stroke="#222" stroke-width="4"/>
+<polygon points="800.0,903 787.0,881 813.0,881" fill="#222"/>
+<rect x="175" y="905" width="1250" height="125" rx="20" fill="#eef5fb" stroke="#1f4e79" stroke-width="4"/>
+<text x="800.0" y="977.5" text-anchor="middle" font-family="Times New Roman" font-size="31">Вычислить точные значения и абсолютные погрешности</text>
+<line x1="800.0" y1="1030" x2="800.0" y2="1089" stroke="#222" stroke-width="4"/>
+<polygon points="800.0,1103 787.0,1081 813.0,1081" fill="#222"/>
+<rect x="175" y="1105" width="1250" height="125" rx="20" fill="#eef5fb" stroke="#1f4e79" stroke-width="4"/>
+<text x="800.0" y="1177.5" text-anchor="middle" font-family="Times New Roman" font-size="31">Повторить для всех точек новой сетки и вывести результаты</text>
+</svg>
