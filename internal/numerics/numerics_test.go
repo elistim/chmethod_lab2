@@ -52,6 +52,22 @@ func TestVariantInterpolation(t *testing.T) {
 		}
 	}
 }
+func TestRegularWindowSelection(t *testing.T) {
+	in := DefaultInterpolation()
+	in.Degree = 1
+	out, err := Interpolate(in)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// For degree 1 the source intervals repeat in symmetric pairs:
+	// two grid points per window 0..1, 1..2, …, 9..10.
+	want := []int{0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 9}
+	for i, row := range out.Rows {
+		if row.Start != want[i] {
+			t.Fatalf("grid point %d: window start = %d, want %d", i, row.Start, want[i])
+		}
+	}
+}
 func TestCustomTableAndValidation(t *testing.T) {
 	in := InterpolationInput{Nodes: []Point{{0, 1}, {1, 3}, {2, 5}}, Grid: []float64{0, .5, 2}, Degree: 1}
 	out, err := Interpolate(in)
@@ -111,7 +127,7 @@ func TestVariantIntegration(t *testing.T) {
 		}
 		// Independent fine composite Simpson quadrature verifies the series.
 		near(t, out.Reference, quadrature(Integrand, -.75, .75, 65536, "simpson", nil), 2e-14)
-		if out.Iterations[0].N != 8 && method != "gauss" {
+		if out.Iterations[0].N != 8 {
 			t.Fatal("wrong initial n")
 		}
 		t.Logf("%s: I=%.15g, n=%d, relative error=%.3g", method, out.Value, out.N, out.RelativeError)

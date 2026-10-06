@@ -196,9 +196,6 @@ func Integrate(in IntegrationInput) (IntegrationResult, error) {
 		out.Reference = ReferencePrimitive(in.B) - ReferencePrimitive(in.A)
 	}
 	n := in.N
-	if in.Method == "gauss" {
-		n = 1
-	}
 	previous := quadrature(f, in.A, in.B, n, in.Method, rule)
 	if evaluationError != nil {
 		return out, evaluationError

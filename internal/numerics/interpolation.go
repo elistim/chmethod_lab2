@@ -4,7 +4,6 @@ package numerics
 import (
 	"fmt"
 	"math"
-	"sort"
 )
 
 type Point struct {
@@ -91,21 +90,25 @@ func Newton(nodes []Point, x float64) (value, first, second float64) {
 	return value, first / scale, second / (scale * scale)
 }
 
-// Select degree+1 nearest nodes, retaining their natural order. In one
-// dimension these form a contiguous window. Ties choose the left node.
+// Select degree+1 consecutive nodes forming a contiguous window whose
+// midpoint is closest to x. On an exact tie (or a difference within the
+// floating-point tolerance of the comparison) the window with the larger
+// start index wins, which keeps the windows regular and symmetric when
+// the new grid lands on original nodes or midpoints.
 func window(nodes []Point, x float64, degree int) int {
-	r := sort.Search(len(nodes), func(i int) bool { return nodes[i].X >= x })
-	l := r - 1
-	for i := 0; i <= degree; i++ {
-		if l < 0 {
-			r++
-		} else if r >= len(nodes) || x-nodes[l].X <= nodes[r].X-x {
-			l--
-		} else {
-			r++
+	tolerance := 1e-12 * (1 + math.Abs(x))
+	best, bestDistance := 0, math.Inf(1)
+	for s := 0; s+degree < len(nodes); s++ {
+		mid := (nodes[s].X + nodes[s+degree].X) / 2
+		d := math.Abs(x - mid)
+		switch {
+		case d < bestDistance-tolerance:
+			best, bestDistance = s, d
+		case d <= bestDistance+tolerance && s > best:
+			best, bestDistance = s, d
 		}
 	}
-	return l + 1
+	return best
 }
 
 func Interpolate(in InterpolationInput) (InterpolationResult, error) {
